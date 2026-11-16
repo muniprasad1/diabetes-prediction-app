@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction App</title>
+    <!-- Using Tailwind CSS for clean, responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .container-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Custom styling for the result box */
+        .result-box {
+            border-left: 5px solid;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex justify-center items-start pt-10 pb-10">
+
+    <div class="container-card bg-white p-8 rounded-xl w-full max-w-lg">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">Diabetes Prediction App</h1>
+
+        <!-- Error Message Display -->
+        {% if error %}
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                <p class="font-bold">Input Error</p>
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+
+        <p class="text-gray-600 mb-6">
+            Please enter the required health parameters below. All fields are required for analysis.
+        </p>
+
+        <!-- Prediction Form -->
+        <form action="/predict" method="post" class="space-y-4">
+
+            <!-- 1. Pregnancies -->
+            <div>
+                <label for="Pregnancies" class="block text-sm font-medium text-gray-700">Pregnancies (Number)</label>
+                <!-- FIXED: Changed user_input to input_data to match app.py -->
+                <input type="number" name="Pregnancies" id="Pregnancies" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ input_data.Pregnancies if input_data else '' }}">
+            </div>
+
+            <!-- 2. Glucose -->
+            <div>
+                <label for="Glucose" class="block text-sm font-medium text-gray-700">Glucose (mg/dL)</label>
+                <!-- FIXED: Changed user_input to input_data -->
+                <input type="number" step="any" name="Glucose" id="Glucose" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ input_data.Glucose if input_data else '' }}">
+            </div>
+
+            <!-- 3. Blood Pressure -->
+            <div>
+                <label for="BloodPressure" class="block text-sm font-medium text-gray-700">Blood Pressure (mmHg)</label>
+                <!-- FIXED: Changed user_input to input_data -->
+                <input type="number" step="any" name="BloodPressure" id="BloodPressure" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ input_data.BloodPressure if input_data else '' }}">
+            </div>
+
+            <!-- 4. Skin Thickness -->
+            <div>
+                <label for="SkinThickness" class="block text-sm font-medium text-gray-700">Skin Thickness (mm)</label>
+                <!-- FIXED: Changed user_input to input_data -->
+                <input type="number" step="any" name="SkinThickness" id="SkinThickness" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ input_data.SkinThickness if input_data else '' }}">
+            </div>
+
+            <!-- 5. Insulin -->
+            <div>
+                <label for="Insulin" class="block text-sm font-medium text-gray-700">Insulin (mu U/ml)</label>
+                <!-- FIXED: Changed user_input to input_data -->
+                <input type="number" step="any" name="Insulin" id="Insulin" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ input_data.Insulin if input_data else '' }}">
+            </div>
+
+            <!-- 6. BMI -->
+            <div>
+                <label for="BMI" class="block text-sm font-medium text-gray-700">BMI (kg/m²)</label>
+                <!-- FIXED: Changed user_input to input_data -->
+                <input type="number" step="any" name="BMI" id="BMI" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ input_data.BMI if input_data else '' }}">
+            </div>
+
+            <!-- 7. Diabetes Pedigree Function -->
+            <div>
+                <label for="DiabetesPedigreeFunction" class="block text-sm font-medium text-gray-700">Diabetes Pedigree Function</label>
+                <!-- FIXED: Changed user_input to input_data -->
+                <input type="number" step="any" name="DiabetesPedigreeFunction" id="DiabetesPedigreeFunction" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ input_data.DiabetesPedigreeFunction if input_data else '' }}">
+            </div>
+
+            <!-- 8. Age -->
+            <div>
+                <label for="Age" class="block text-sm font-medium text-gray-700">Age (years)</label>
+                <!-- FIXED: Changed user_input to input_data -->
+                <input type="number" name="Age" id="Age" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500"
+                       value="{{ input_data.Age if input_data else '' }}">
+            </div>
+
+            <button type="submit"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                Analyze Risk
+            </button>
+        </form>
+
+        <!-- Prediction Result Display -->
+        <!-- This block is now safe because prediction_result is either defined (POST) or None (GET) -->
+        {% if prediction_result is not none %}
+            <div class="result-box mt-8">
+                <h2 class="text-xl font-semibold mb-2 {% if prediction_result == 'DIABETES DETECTED' %}text-red-700{% else %}text-green-700{% endif %}">
+                    Prediction Result
+                </h2>
+
+                {% if prediction_result == 'DIABETES DETECTED' %}
+                    <div class="border-red-500 bg-red-100 p-4 rounded-lg">
+                        <p class="font-bold text-red-700">Warning:</p>
+                        <p class="text-red-600">Based on the provided data, the model predicts a **Positive** result (high risk of diabetes). You should consult a healthcare professional.</p>
+                        <!-- FIXED: Removed | float * 100 | round(2) because Python sends a formatted string -->
+                        <p class="mt-2 text-sm text-red-700">Probability of Diabetes: **{{ probability }}**</p>
+                    </div>
+                {% else %}
+                    <div class="border-green-500 bg-green-100 p-4 rounded-lg">
+                        <p class="font-bold text-green-700">Good News:</p>
+                        <p class="text-green-600">Based on the provided data, the model predicts a **Negative** result (low risk of diabetes).</p>
+                        <!-- FIXED: Removed | float * 100 | round(2) because Python sends a formatted string -->
+                        <p class="mt-2 text-sm text-green-700">Probability of No Diabetes: **{{ probability }}**</p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
